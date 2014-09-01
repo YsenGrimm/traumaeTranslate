@@ -1,107 +1,131 @@
-<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'></script>
-
-<style>
-
-*           { margin:0;padding:0;border:0;outline:0;text-decoration:none;font-weight:inherit;font-style:inherit;color:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;list-style:none;border-collapse:separate;border-spacing:0;}
-body { padding:150px 0px; font-family: Baskerville; font-size:18px; line-height: 30px; text-align: center}
-
-#transfrom { padding:5px 0px; width:50%;}
-result{ display: block; width:50%; margin:0px auto;}
-term { display: inline-block;padding: 5px 5px;margin: 1px;border-radius: 3px;}
-result term strong { display: block; font-size:34px}
-term.unknown strong { display: block; color: #ccc}
-term small { display: block;font-size: 14px}
-term.suggestion { background:#eee; display:block;}
-input { border:0px; border-bottom: 1px solid #000; font-size:34px;}
-#transfrom { text-align: center; }
-result,suggestions { padding:5px 0px; width:50%; border-bottom:1px solid #eee; margin-bottom: 30px; display: block; margin:0px auto}
-suggestions term { display: block}
-suggestions term strong { font-weight: bold}
-</style>
-
-<script>
-
-var dict;
-$(document).ready(function() {
-
-	$.ajax({
-        url : "http://api.xxiivv.com/traumae/dictionary",
-        dataType: "text",
-        success : function (data) {
-            dict = jQuery.parseJSON( data );
+<!DOCTYPE html>
+<html>
+<head>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'></script>
+    <style>
+        * {
+            margin:0;
+            padding:0;
+            border:0;
+            outline:0;
+            text-decoration:none;
+            font-weight:inherit;
+            font-style:inherit;
+            color:inherit;
+            font-size:100%;
+            font-family:inherit;
+            vertical-align:baseline;
+            list-style:none;
+            border-collapse:separate;
+            border-spacing:0;
         }
-    });
-	$(document).on('keyup', '#transfrom', function(e) {
-	    translateCall();
-	});
 
-});
+        body {
+            padding:150px 0px;
+            font-family: Baskerville;
+            font-size:18px;
+            line-height: 30px;
+            text-align: center
+        }
 
-function unique(list) {
-  var result = [];
-  $.each(list, function(i, e) {
-    if ($.inArray(e, result) == -1) result.push(e);
-  });
-  return result;
-}
+        #transfrom {
+            padding:5px 0px;
+            width:50%;
+        }
+        result{ display: block; width:50%; margin:0px auto;}
+        term { display: inline-block;padding: 5px 5px;margin: 1px;border-radius: 3px;}
+        result term strong { display: block; font-size:34px}
+        term.unknown strong { display: block; color: #ccc}
+        term small { display: block;font-size: 14px}
+        term.suggestion { background:#eee; display:block;}
+        input { border:0px; border-bottom: 1px solid #000; font-size:34px;}
+        #transfrom { text-align: center; }
+        result,suggestions { padding:5px 0px; width:50%; border-bottom:1px solid #eee; margin-bottom: 30px; display: block; margin:0px auto}
+        suggestions term { display: block}
+        suggestions term strong { font-weight: bold}
+    </style>
 
-function translateCall(){
+    <script>
+        var dict;
+        $(document).ready(function() {
+            $.ajax({
+                url : "http://api.xxiivv.com/traumae/dictionary",
+                dataType: "text",
+                success : function (data) {
+                    dict = jQuery.parseJSON( data );
+                }
+            });
+            $(document).on('keyup', '#transfrom', function(e) {
+                translateCall();
+            });
+        });
 
-	var translateInput = $("#transfrom").val();
+        function unique(list) {
+          var result = [];
+          $.each(list, function(i, e) {
+            if ($.inArray(e, result) == -1) result.push(e);
+          });
+          return result;
+        }
 
-	var translatedString = "";
-	var suggestionString = "";
+        function translateCall(){
 
-	$.each( translateInput.split(" "), function( key, inputWord ) {
-	  	
-	  	if( dict[inputWord] ){
-			translatedString += "<term><strong><a href='http://wiki.xxiivv.com/"+dict[inputWord][0].tae+"'>"+dict[inputWord][0].adult+"</a></strong><small>"+dict[inputWord][0].tae+"</small></term>";
-		}
-		else{
-			translatedString += "<term class='unknown'><strong>"+inputWord+"</strong><small>-</small></term>";
-		}
+            var translateInput = $("#transfrom").val();
 
-	});
+            var translatedString = "";
+            var suggestionString = "";
 
-	var suggestions = [];
+            $.each( translateInput.split(" "), function( key, inputWord ) {
 
-	i = 0;
-	while( i < translateInput.split(" ").length ){
+                if( dict[inputWord] ){
+                    translatedString += "<term><strong><a href='http://wiki.xxiivv.com/"+dict[inputWord][0].tae+"'>"+dict[inputWord][0].adult+"</a></strong><small>"+dict[inputWord][0].tae+"</small></term>";
+                }
+                else{
+                    translatedString += "<term class='unknown'><strong>"+inputWord+"</strong><small>-</small></term>";
+                }
 
-		var lookUp1 = translateInput.split(" ")[i]+" "+translateInput.split(" ")[i+1];
-		var lookUp2 = translateInput.split(" ")[i-1]+" "+translateInput.split(" ")[i];
-		$.each( dict, function( key1, term ) {
-			if( term[0].eng.indexOf(lookUp1) > -1 ){
-				suggestions.push(term[0].eng);
-			}
-		});
-		i += 1;
+            });
 
-	}
+            var suggestions = [];
 
-	suggestions = unique(suggestions);
-	$.each( suggestions, function( key, word ) {
+            i = 0;
+            while( i < translateInput.split(" ").length ){
 
-		wordDisplay = word;
+                var lookUp1 = translateInput.split(" ")[i]+" "+translateInput.split(" ")[i+1];
+                var lookUp2 = translateInput.split(" ")[i-1]+" "+translateInput.split(" ")[i];
+                $.each( dict, function( key1, term ) {
+                    if( term[0].eng.indexOf(lookUp1) > -1 ){
+                        suggestions.push(term[0].eng);
+                    }
+                });
+                i += 1;
 
-		$.each( translateInput.split(" "), function( key, inputWord ) {
-			wordDisplay = wordDisplay.replace(inputWord, "<strong>"+inputWord+"</strong>");
-		});
+            }
 
-		suggestionString += "<term>"+wordDisplay+" : "+dict[word][0].tae+"</term>";
-	});
+            suggestions = unique(suggestions);
+            $.each( suggestions, function( key, word ) {
 
-	$("result").html(translatedString);
-	$("suggestions").html(suggestionString);
+                wordDisplay = word;
 
-}
+                $.each( translateInput.split(" "), function( key, inputWord ) {
+                    wordDisplay = wordDisplay.replace(inputWord, "<strong>"+inputWord+"</strong>");
+                });
 
+                suggestionString += "<term>"+wordDisplay+" : "+dict[word][0].tae+"</term>";
+            });
+
+            $("result").html(translatedString);
+            $("suggestions").html(suggestionString);
+
+        }
 </script>
-
-
-<input placeholder='...' id='transfrom' autocomplete="off"/>
-<result>Translation</result>
-<suggestions>Suggestions</suggestions>
+</head>
+<body>
+    <input placeholder='...' id='transfrom' autocomplete="off"/>
+    <result>Translation</result>
+    <suggestions>Suggestions</suggestions>
+</body>
+</html>
 
 
 
