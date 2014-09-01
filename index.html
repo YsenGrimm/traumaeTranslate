@@ -96,6 +96,46 @@
 
         }
 
+        var german = {
+
+
+            // alphabet
+            "elterlich" : "parent",
+            "invertiert" : "inwardness",
+            "unmöglich" : "impossibility",
+            "intern" : "instance", // should be nach innen
+            "leblos" : "inanimate",
+            "möglich" : "possibility",
+            "kindlich" : "children",
+            "äußerlich" : "outwardness", // should be nach außen
+            "speziell" : "specificity",
+            "psychisch" : "psychology",
+            "hinzufügen" : "addition",
+            "positiv" : "positivity",
+            "physisch" : "physiognomy", // should be Physiognomie
+            "gleich" : "equality",
+            "unbekannt" : "unknown",
+            "körperlich"  : "physicality", // could also be physisch
+            "abziehen" : "subtraction",
+            "negativ" : "negativity",
+            "komplex" : "complexity",
+            "vielfältig" : "multiplicity",
+            "überwacht" : "observation",
+            "organisch" : "organicity",
+            "einzigartig" : "uniqueness",
+            "existent" : "existance",
+            "künstlich" : "syntheticity",
+            "nicht" : "noneness", // unvorhanden
+            "aktiv" : "action",
+
+            // pronouns
+            "ich" : "I",
+            "wir" : "we",
+            "mir" : "my",
+            "unser" : "our"
+
+        }
+
 
 
         var dict;
@@ -130,8 +170,10 @@
             //hacky
             var cleanInput = "";
             $.each( translateInput.split(" "), function( key, inputWord ) {
-                if (commonAbbrevations[inputWord] != null) {
-                    cleanInput += commonAbbrevations[inputWord] + " ";
+                //if (commonAbbrevations[inputWord] != null) {
+                if (german[inputWord] != null) {
+                    //cleanInput += commonAbbrevations[inputWord] + " ";
+                    cleanInput += german[inputWord] + " ";
                 } else {
                     cleanInput += inputWord + " ";
                 }
