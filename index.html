@@ -32,20 +32,72 @@
             padding:5px 0px;
             width:50%;
         }
-        result{ display: block; width:50%; margin:0px auto;}
-        term { display: inline-block;padding: 5px 5px;margin: 1px;border-radius: 3px;}
-        result term strong { display: block; font-size:34px}
-        term.unknown strong { display: block; color: #ccc}
-        term small { display: block;font-size: 14px}
-        term.suggestion { background:#eee; display:block;}
-        input { border:0px; border-bottom: 1px solid #000; font-size:34px;}
-        #transfrom { text-align: center; }
-        result,suggestions { padding:5px 0px; width:50%; border-bottom:1px solid #eee; margin-bottom: 30px; display: block; margin:0px auto}
-        suggestions term { display: block}
-        suggestions term strong { font-weight: bold}
+        result {
+            display: block;
+            width:50%;
+            margin:0px auto;
+        }
+        term {
+            display: inline-block;
+            padding: 5px 5px;
+            margin: 1px;
+            border-radius: 3px;
+        }
+        result term strong {
+            display: block;
+            font-size:34px
+        }
+        term.unknown strong {
+            display: block;
+            color: #ccc
+        }
+        term small {
+            display: block;
+            font-size: 14px
+        }
+        term.suggestion {
+            background:#eee;
+            display:block;
+        }
+        input {
+            border:0px;
+            border-bottom: 1px solid #000;
+            font-size:34px;
+        }
+        #transfrom {
+            text-align: center;
+        }
+        result,suggestions {
+            padding:5px 0px;
+            width:50%;
+            border-bottom:1px solid #eee;
+            margin-bottom: 30px;
+            display: block;
+            margin:0px auto
+        }
+        suggestions term {
+            display: block
+        }
+        suggestions term strong {
+            font-weight: bold
+        }
     </style>
 
     <script>
+
+        var commonAbbrevations = {
+
+            "i" : "I",
+            "it's" : "it is",
+            "i'm" : "I am",
+            "don't" : "do not",
+            "gonna" : "going to",
+            "wanna" : "want to"
+
+        }
+
+
+
         var dict;
         $(document).ready(function() {
             $.ajax({
@@ -75,12 +127,26 @@
             var translatedString = "";
             var suggestionString = "";
 
+            //hacky
+            var cleanInput = "";
+            $.each( translateInput.split(" "), function( key, inputWord ) {
+                if (commonAbbrevations[inputWord] != null) {
+                    cleanInput += commonAbbrevations[inputWord] + " ";
+                } else {
+                    cleanInput += inputWord + " ";
+                }
+            });
+            translateInput = cleanInput;
+
             $.each( translateInput.split(" "), function( key, inputWord ) {
 
                 if( dict[inputWord] ){
                     translatedString += "<term><strong><a href='http://wiki.xxiivv.com/"+dict[inputWord][0].tae+"'>"+dict[inputWord][0].adult+"</a></strong><small>"+dict[inputWord][0].tae+"</small></term>";
                 }
-                else{
+                else {
+                    if (inputWord == "") {
+                        return;
+                    }
                     translatedString += "<term class='unknown'><strong>"+inputWord+"</strong><small>-</small></term>";
                 }
 
@@ -89,17 +155,15 @@
             var suggestions = [];
 
             i = 0;
-            while( i < translateInput.split(" ").length ){
-
-                var lookUp1 = translateInput.split(" ")[i]+" "+translateInput.split(" ")[i+1];
-                var lookUp2 = translateInput.split(" ")[i-1]+" "+translateInput.split(" ")[i];
+            while( i < translateInput.split(" ").length-2 ) { //even more hacky but works
+                var lookUp1 = translateInput.split(" ")[i] + " " + translateInput.split(" ")[i+1];
+                var lookUp2 = translateInput.split(" ")[i-1] + " " + translateInput.split(" ")[i];
                 $.each( dict, function( key1, term ) {
                     if( term[0].eng.indexOf(lookUp1) > -1 ){
                         suggestions.push(term[0].eng);
                     }
                 });
-                i += 1;
-
+                ++i;
             }
 
             suggestions = unique(suggestions);
@@ -124,6 +188,11 @@
     <input placeholder='...' id='transfrom' autocomplete="off"/>
     <result>Translation</result>
     <suggestions>Suggestions</suggestions>
+    <script>
+        $("#transfrom").focus(function() {
+            $(this).attr("placeholder", "");
+        })
+    </script>
 </body>
 </html>
 
